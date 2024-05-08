@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
   { name: 'Jan', Sales: 4000, Revenue: 2400 },
@@ -13,35 +12,32 @@ const data = [
   { name: 'Jul', Sales: 3490, Revenue: 4300 },
 ];
 
+const maxValue = Math.max(...data.map(item => Math.max(item.Sales, item.Revenue)));
+
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleClick = (data, index) => {
+  const handleClick = (index) => {
     setActiveIndex(index);
   };
 
   return (
     <div className="p-5">
       <h1 className="text-3xl font-bold text-center mb-10">Business Dashboard</h1>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart
-          width={500}
-          height={300}
-          data={data}
-          margin={{
-            top: 20, right: 30, left: 20, bottom: 5,
-          }}
-          onClick={handleClick}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="Sales" fill="#8884d8" />
-          <Bar dataKey="Revenue" fill="#82ca9d" />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="flex justify-center items-end space-x-2 h-64 bg-gray-100 p-4">
+        {data.map((item, index) => (
+          <div key={index} className={`cursor-pointer h-${50 * item.Sales / maxValue} w-10 bg-blue-500`} onClick={() => handleClick(index)} title={`Sales: ${item.Sales}`}>
+            <span className="text-xs">{item.name}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex justify-center items-end space-x-2 h-64 bg-gray-200 p-4">
+        {data.map((item, index) => (
+          <div key={index} className={`cursor-pointer h-${50 * item.Revenue / maxValue} w-10 bg-green-500`} onClick={() => handleClick(index)} title={`Revenue: ${item.Revenue}`}>
+            <span className="text-xs">{item.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
